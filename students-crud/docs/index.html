@@ -1,0 +1,41 @@
+<!DOCTYPE html><html lang=en><meta charset=UTF-8><meta name=viewport content="width=device-width, initial-scale=1.0"><title></title><link rel=stylesheet href=/students-crud.a6b49b58.css><body>
+    <div class=container></div>
+  <h1>список студентів</h1>
+
+  <button id=get-students-btn>отримати студентів</button>
+
+  <table id=students-table>
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>імʼя</th>
+        <th>вік</th>
+        <th>курс</th>
+        <th>навички</th>
+        <th>email</th>
+        <th>статус</th>
+        <th>дії</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+
+  <h2>додати студента</h2>
+
+  <form id=add-student-form>
+    <input id=name placeholder=Імʼя required>
+    <input id=age type=number placeholder=Вік required>
+    <input id=course placeholder=Курс required>
+    <input id=skills placeholder="Навички через кому" required>
+    <input id=email type=email placeholder=Email required>
+    <label>
+      записаний
+      <input type=checkbox id=isEnrolled>
+    </label>
+    <button>додати</button>
+  </form>
+
+
+<script type=module src=/students-crud.cd08f68f.js></script>
+  
+
