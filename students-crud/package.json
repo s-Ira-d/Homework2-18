@@ -3,7 +3,9 @@
   "version": "1.0.0",
   "scripts": {
     "dev": "parcel src/index.html",
-    "server": "json-server students.json --port 3000"
+    "server": "json-server students.json --port 3000",
+    "deploy": "gh-pages -d dist",
+    "re": "npm run predeploy && git add . && git commit -m main && git push origin main && npm run deploy"
   },
   "keywords": [],
   "author": "Ira",
