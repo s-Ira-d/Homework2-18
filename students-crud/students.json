@@ -38,6 +38,16 @@
       ],
       "email": "irina.starovoitova@example.com",
       "isEnrolled": true
+    },
+    {
+      "id": "6b35",
+      "age": 42,
+      "course": "wet",
+      "skills": [
+        "fe"
+      ],
+      "email": "20irina12@gmail.com",
+      "isEnrolled": true
     }
   ]
 }
