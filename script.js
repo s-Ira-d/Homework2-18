@@ -1,12 +1,12 @@
-const API_URL = "http://localhost:3000/students";
+const API_URL = "https://6969262469178471522cc161.mockapi.io/Students";
 
 // Функція для отримання всіх студентів
 function getStudents() {
   // твій код
   fetch(API_URL)
     .then((response) => response.json())
-    .then((students) => renderStudents(students))
-    .catch((err) => console.error("помилка при отриманні студентів:", err));
+    .then((data) => renderStudents(data.students))
+    .catch((err) => console.error("Помилка при отриманні студентів:", err));
 }
 
 // Функція для відображення студентів у таблиці
@@ -26,10 +26,11 @@ function renderStudents(students) {
       <td>${student.skills.join(", ")}</td>
       <td>${student.email}</td>
       <td>${student.isEnrolled ? "так" : "ні"}</td>
-      <td>
-        <button onclick="updateStudent(${student.id})">оновити</button>
-        <button onclick="deleteStudent(${student.id})">видалити</button>
-      </td>
+    <td>
+  <button class="update-btn" data-id="${student.id}">оновити</button>
+  <button class="delete-btn" data-id="${student.id}">видалити</button>
+</td>
+
     `;
 
     tbody.appendChild(tr);
