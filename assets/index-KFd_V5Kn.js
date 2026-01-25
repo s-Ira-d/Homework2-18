@@ -1,0 +1,13 @@
+(function(){const e=document.createElement("link").relList;if(e&&e.supports&&e.supports("modulepreload"))return;for(const t of document.querySelectorAll('link[rel="modulepreload"]'))d(t);new MutationObserver(t=>{for(const n of t)if(n.type==="childList")for(const s of n.addedNodes)s.tagName==="LINK"&&s.rel==="modulepreload"&&d(s)}).observe(document,{childList:!0,subtree:!0});function o(t){const n={};return t.integrity&&(n.integrity=t.integrity),t.referrerPolicy&&(n.referrerPolicy=t.referrerPolicy),t.crossOrigin==="use-credentials"?n.credentials="include":t.crossOrigin==="anonymous"?n.credentials="omit":n.credentials="same-origin",n}function d(t){if(t.ep)return;t.ep=!0;const n=o(t);fetch(t.href,n)}})();const c="http://localhost:3000/students",p=document.getElementById("get-students-btn"),a=document.querySelector("#students-table tbody"),u=document.getElementById("add-student-form");p.addEventListener("click",i);u.addEventListener("submit",y);async function i(){try{const e=await(await fetch(c)).json();f(e)}catch{alert("помилка отримання студентів")}}function f(r){a.innerHTML="",r.forEach(e=>{const o=document.createElement("tr");o.innerHTML=`
+      <td>${e.id}</td>
+      <td>${e.name}</td>
+      <td>${e.age}</td>
+      <td>${e.course}</td>
+      <td>${e.skills.join(", ")}</td>
+      <td>${e.email}</td>
+      <td>${e.isEnrolled?"Так":"Ні"}</td>
+      <td>
+        <button onclick="updateStudent(${e.id})">оновити</button>
+        <button onclick="deleteStudent(${e.id})">видалити</button>
+      </td>
+    `,a.appendChild(o)})}async function y(r){r.preventDefault();const e={name:document.getElementById("name").value,age:+document.getElementById("age").value,course:document.getElementById("course").value,skills:document.getElementById("skills").value.split(",").map(o=>o.trim()),email:document.getElementById("email").value,isEnrolled:document.getElementById("isEnrolled").checked};try{await fetch(c,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(e)}),u.reset(),i()}catch{alert("помилка додавання студента")}}async function g(r){const e=prompt("Введіть нове ім'я:"),o=prompt("Введіть новий вік:"),d=prompt("Введіть новий курс:"),t=prompt("Введіть нові навички (через кому):"),n=prompt("Введіть новий email:"),s=confirm("Студент записаний? (OK = Так, Cancel = Ні)");if(!e||!o||!d||!t||!n)return;const m={name:e,age:Number(o),course:d,skills:t.split(",").map(l=>l.trim()),email:n,isEnrolled:s};try{await fetch(`${c}/${r}`,{method:"PUT",headers:{"Content-Type":"application/json"},body:JSON.stringify(m)}),i()}catch{alert("помилка оновлення")}}window.updateStudent=g;window.deleteStudent=deleteStudent;
