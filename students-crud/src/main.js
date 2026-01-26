@@ -1,4 +1,64 @@
-const API_URL = "http://localhost:3000/students";
+const STORAGE_KEY = "students";
+
+const initialStudents = [
+  {
+    id: 1,
+    name: "Ivan Petrenko",
+    age: 15,
+    course: "Web Development",
+    skills: ["HTML", "CSS", "JavaScript"],
+    email: "ivan.petrenko@example.com",
+    isEnrolled: true,
+  },
+  {
+    id: 2,
+    name: "Olha Kovalenko",
+    age: 16,
+    course: "Game Development",
+    skills: ["C#", "Unity"],
+    email: "olha.kovalenko@example.com",
+    isEnrolled: true,
+  },
+  {
+    id: 3,
+    name: "Dmytro Shevchenko",
+    age: 14,
+    course: "Mobile App Development",
+    skills: ["Java", "Kotlin", "Android Studio"],
+    email: "dmytro.shevchenko@example.com",
+    isEnrolled: false,
+  },
+  {
+    id: 4,
+    name: "Anastasia Ivanova",
+    age: 17,
+    course: "Data Science",
+    skills: ["Python", "Pandas", "Machine Learning"],
+    email: "anastasia.ivanova@example.com",
+    isEnrolled: true,
+  },
+  {
+    id: 5,
+    name: "Mykola Bondarenko",
+    age: 15,
+    course: "Cybersecurity",
+    skills: ["Networking", "Ethical Hacking", "Linux"],
+    email: "mykola.bondarenko@example.com",
+    isEnrolled: true,
+  },
+];
+
+if (!localStorage.getItem(STORAGE_KEY)) {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(initialStudents));
+}
+
+function getStudentsFromStorage() {
+  return JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
+}
+
+function saveStudentsToStorage(students) {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(students));
+}
 
 const getStudentsBtn = document.getElementById("get-students-btn");
 const studentsTableBody = document.querySelector("#students-table tbody");
@@ -7,14 +67,9 @@ const addStudentForm = document.getElementById("add-student-form");
 getStudentsBtn.addEventListener("click", getStudents);
 addStudentForm.addEventListener("submit", addStudent);
 
-async function getStudents() {
-  try {
-    const res = await fetch(API_URL);
-    const students = await res.json();
-    renderStudents(students);
-  } catch (err) {
-    alert("помилка отримання студентів");
-  }
+function getStudents() {
+  const students = getStudentsFromStorage();
+  renderStudents(students);
 }
 
 function renderStudents(students) {
@@ -41,10 +96,13 @@ function renderStudents(students) {
   });
 }
 
-async function addStudent(e) {
+function addStudent(e) {
   e.preventDefault();
 
+  const students = getStudentsFromStorage();
+
   const newStudent = {
+    id: Date.now(),
     name: document.getElementById("name").value,
     age: +document.getElementById("age").value,
     course: document.getElementById("course").value,
@@ -56,50 +114,45 @@ async function addStudent(e) {
     isEnrolled: document.getElementById("isEnrolled").checked,
   };
 
-  try {
-    await fetch(API_URL, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(newStudent),
-    });
+  students.push(newStudent);
+  saveStudentsToStorage(students);
 
-    addStudentForm.reset();
-    getStudents();
-  } catch (err) {
-    alert("помилка додавання студента");
-  }
+  e.target.reset();
+  getStudents();
 }
 
-async function updateStudent(id) {
-  const name = prompt("Введіть нове ім'я:");
-  const age = prompt("Введіть новий вік:");
-  const course = prompt("Введіть новий курс:");
-  const skills = prompt("Введіть нові навички (через кому):");
-  const email = prompt("Введіть новий email:");
-  const isEnrolled = confirm("Студент записаний? (OK = Так, Cancel = Ні)");
+function updateStudent(id) {
+  const students = getStudentsFromStorage();
+  const student = students.find((s) => s.id === id);
+
+  if (!student) return;
+
+  const name = prompt("Ім'я:", student.name);
+  const age = prompt("Вік:", student.age);
+  const course = prompt("Курс:", student.course);
+  const skills = prompt("Навички:", student.skills.join(", "));
+  const email = prompt("Email:", student.email);
+  const isEnrolled = confirm("Записаний?");
 
   if (!name || !age || !course || !skills || !email) return;
 
-  const updatedStudent = {
-    name,
-    age: Number(age),
-    course,
-    skills: skills.split(",").map((s) => s.trim()),
-    email,
-    isEnrolled,
-  };
+  student.name = name;
+  student.age = Number(age);
+  student.course = course;
+  student.skills = skills.split(",").map((s) => s.trim());
+  student.email = email;
+  student.isEnrolled = isEnrolled;
 
-  try {
-    await fetch(`${API_URL}/${id}`, {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(updatedStudent),
-    });
+  saveStudentsToStorage(students);
+  getStudents();
+}
 
-    getStudents();
-  } catch (err) {
-    alert("помилка оновлення");
-  }
+function deleteStudent(id) {
+  const students = getStudentsFromStorage();
+  const filtered = students.filter((s) => s.id !== id);
+
+  saveStudentsToStorage(filtered);
+  getStudents();
 }
 
 window.updateStudent = updateStudent;
